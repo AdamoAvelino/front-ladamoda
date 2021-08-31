@@ -1,4 +1,4 @@
 import { routes as cammon } from "../modules/common";
-import { routes as compras } from "../modules/pedido-compra";
+import { routes as orderPurchases } from "../modules/order-purchase";
 
-export default [...cammon, ...compras];
+export default [...cammon, ...orderPurchases];

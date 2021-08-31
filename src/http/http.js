@@ -1,13 +1,13 @@
-import { services as compras } from "./../modules/pedido-compra";
-import { services as categoria } from "./../modules/categoria";
-import { services as variacao } from "./../modules/variacao";
-import { services as tamanho } from "./../modules/tamanho";
-import { services as fornecedor } from "./../modules/fornecedor";
+import { services as orderPurchases } from "./../modules/order-purchase";
+import { services as categories } from "../modules/category";
+import { services as colors } from "../modules/color";
+import { services as sizes } from "../modules/size";
+import { services as vendors } from "./../modules/vendor";
 
 export default {
-  compras,
-  categoria,
-  variacao,
-  tamanho,
-  fornecedor
+  orderPurchases,
+  categories,
+  colors,
+  sizes,
+  vendors
 };

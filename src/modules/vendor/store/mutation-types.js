@@ -1,0 +1,1 @@
+export const SET_VENDOR = "VENDORS/SET_VENDOR";

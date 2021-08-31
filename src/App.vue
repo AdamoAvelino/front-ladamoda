@@ -6,6 +6,7 @@
 </template>
 
 <script>
+// window.localStorage.removeItem('vuex') para atualização de variaveis de vue persistence
 import NavBarComponent from "../src/components/NavbarComponent.vue";
 export default {
   components: {

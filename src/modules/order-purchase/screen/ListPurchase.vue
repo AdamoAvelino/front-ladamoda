@@ -1,16 +1,13 @@
 <template>
   <div class="container-fluid">
     <div class="row mt-2">
-      <div class="col-2 flex-fill">
-        <div
-          class="d-flex h-100 flex-column bg-primary justify-content-center align-items-center shadow-la"
-        >
-          <h3 class="text-center">Pedidos Compra</h3>
-          <h1>
-            <i class="fas fa-handshake"></i>
-          </h1>
-        </div>
-      </div>
+      <info-page-component>
+        <h3 slot="title" class="text-center">Pedidos Compra</h3>
+        <h1 slot="icon">
+          <i class="fas fa-handshake"></i>
+        </h1>
+      </info-page-component>
+
       <div class="col-10">
         <div class="shadow-la p-2 bg-white">
           <header class="row">
@@ -18,7 +15,10 @@
               <h5 class="d-inline-block">Filtros</h5>
             </div>
             <div class="col-10 text-right">
-              <button class="btn btn-sm btn-primary shadow-la">
+              <button
+                class="btn btn-sm btn-primary shadow-la"
+                v-on:click.prevent="registerOrder"
+              >
                 <i class="fas fa-plus-square mr-1"></i> Adicionar
               </button>
             </div>
@@ -28,7 +28,7 @@
               <div class="form-group">
                 <label for="">Número</label>
                 <input
-                  v-model="filtro.purchase_number"
+                  v-model="filter.purchase_number"
                   type="text"
                   class="form-control form-control-sm"
                   placeholder="Número da Compra"
@@ -39,7 +39,7 @@
               <label for="">Data Inicio</label>
               <input
                 type="date"
-                v-model="filtro.date_start"
+                v-model="filter.date_start"
                 class="form-control form-control-sm"
               />
             </div>
@@ -47,7 +47,7 @@
               <label for="">Data Fim</label>
               <input
                 type="date"
-                v-model="filtro.date_end"
+                v-model="filter.date_end"
                 class="form-control form-control-sm"
               />
             </div>
@@ -55,21 +55,21 @@
               <label for="">Categoria</label>
               <select
                 class="form-control form-control-sm"
-                v-model="filtro.category"
+                v-model="filter.category"
               >
                 <option value="">Selecione Uma Categoria</option>
                 <option
-                  v-for="(categoria, index) in categorias"
+                  v-for="(category, index) in categories"
                   :key="index"
-                  :value="categoria.id"
+                  :value="category.id"
                 >
-                  {{ categoria.name }}
+                  {{ category.name }}
                 </option>
               </select>
             </div>
             <div class="col-12">
               <button
-                v-on:click.prevent="buscarPedidos"
+                v-on:click.prevent="searchOrder"
                 type="button"
                 class="btn btn-sm btn-primary shadow-la"
               >
@@ -92,9 +92,9 @@
             </div>
             <div class="col-6 d-flex justify-content-center align-items-center">
               <span
-                v-if="total_compra > 0"
+                v-if="total_purchase > 0"
                 class="text-display"
-                v-moeda-br="total_compra"
+                v-moeda-br="total_purchase"
               ></span>
             </div>
           </div>
@@ -117,18 +117,23 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(pedido, index) in pedidos" :key="index">
-              <td>{{ pedido.purchase_number }}</td>
-              <td v-data-br="pedido.date"></td>
-              <td v-moeda-br="pedido.purchase_value"></td>
-              <td>{{ pedido.vendor.name }}</td>
-              <td>{{ pedido.vendor.cnpj }}</td>
-              <td>{{ pedido.vendor.telephone }}</td>
-              <td>{{ pedido.vendor.email }}</td>
-              <td>
-                <a href="#">
+            <tr v-for="(order, index) in purchases" :key="index">
+              <td>{{ order.purchase_number }} {{ order.id }}</td>
+              <td v-data-br="order.date"></td>
+              <td v-moeda-br="order.purchase_value"></td>
+              <td>{{ order.vendor.name }}</td>
+              <td>{{ order.vendor.cnpj }}</td>
+              <td>{{ order.vendor.telephone }}</td>
+              <td>{{ order.vendor.email }}</td>
+              <td v-if="order.id">
+                <router-link
+                  :to="{
+                    name: 'UpdateOrderPurchase',
+                    params: { id: order.id }
+                  }"
+                >
                   <i class="fas fa-edit"></i>
-                </a>
+                </router-link>
                 <a href="#" class="ml-2">
                   <i class="fas fa-trash"></i>
                 </a>
@@ -143,13 +148,18 @@
 
 <script>
 import services from "../../../http";
+import InfoPageComponent from "../../../components/InfoPageComponent.vue";
 export default {
+  components: {
+    InfoPageComponent
+  },
+
   data() {
     return {
-      pedidos: [],
-      categorias: [],
-      total_compra: 0,
-      filtro: {
+      purchases: [],
+      categories: [],
+      total_purchase: 0,
+      filter: {
         purchase_number: "",
         date_start: "",
         date_end: "",
@@ -158,29 +168,33 @@ export default {
     };
   },
 
-  mounted() {
-    services.compras.listarCompras().then(compra => {
-      this.pedidos = compra.data;
-      this.somarPedidos();
+  async mounted() {
+    await services.purchases.listPurchase().then(purchase => {
+      this.purchases = purchase.data;
+      this.sumOrder();
     });
 
-    services.categoria.listarCategorias().then(response => {
-      this.categorias = response.data;
+    services.categories.listarCategorias().then(response => {
+      this.categories = response.data;
     });
   },
 
   methods: {
-    somarPedidos() {
-      this.total_compra = this.pedidos.reduce((valor_inicial, pedido) => {
-        return valor_inicial + pedido.purchase_value;
+    sumOrder() {
+      this.total_purchase = this.purchases.reduce((start_value, order) => {
+        return start_value + order.purchase_value;
       }, 0);
     },
 
-    buscarPedidos() {
-      services.compras.filtrarCompra(this.filtro).then(compra => {
-        this.pedidos = compra.data;
-        this.somarPedidos();
+    searchOrder() {
+      services.purchases.filterPurchase(this.filter).then(purchase => {
+        this.purchases = purchase.data;
+        this.sumOrder();
       });
+    },
+
+    registerOrder() {
+      this.$router.push({ name: "RegisterOrderPurchase" });
     }
   }
 };

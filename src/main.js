@@ -5,6 +5,8 @@ import store from "./store";
 import http from "./http";
 import ConversionTime from "./plugins/conversion-time";
 import ConversionCurrency from "./plugins/conversion-currency";
+import "popper.js/dist/popper";
+import "bootstrap/dist/js/bootstrap";
 
 import "./assets/sass/app.scss";
 

@@ -39,7 +39,7 @@ export default {
       $(`#${modalId}`).modal("show");
     });
 
-    this.$root.$on("Hide:Modal", modalId => {
+    this.$root.$on("Hide::Modal", modalId => {
       $(`#${modalId}`).modal("hide");
     });
   }

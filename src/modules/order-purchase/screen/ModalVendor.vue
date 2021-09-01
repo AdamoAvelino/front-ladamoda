@@ -7,6 +7,7 @@
           <input
             type="text"
             class="form-control form-control-sm"
+            :class="required.name"
             placeholder="Digite o nome"
             v-model="vendor.name"
           />
@@ -16,6 +17,7 @@
           <input
             type="number"
             class="form-control form-control-sm"
+            :class="required.cnpj"
             placeholder="Digite o CNPJ"
             v-model="vendor.cnpj"
           />
@@ -25,6 +27,7 @@
           <input
             type="email"
             class="form-control form-control-sm"
+            :class="required.email"
             placeholder="Digite o E-mail"
             v-model="vendor.email"
           />
@@ -34,6 +37,7 @@
           <input
             type="number"
             class="form-control form-control-sm"
+            :class="required.telephone"
             placeholder="Digite o Telefone"
             v-model="vendor.telephone"
           />
@@ -63,9 +67,15 @@ export default {
     return {
       vendor: {
         name: "",
-        cnpj: null,
-        telephone: null,
-        email: ""
+        cnpj: "",
+        email: "",
+        telephone: ""
+      },
+      required: {
+        name: { "is-invalid": false },
+        cnpj: { "is-invalid": false },
+        email: { "is-invalid": false },
+        telephone: { "is-invalid": false }
       }
     };
   },
@@ -75,14 +85,36 @@ export default {
     ...mapActions("orderpurchase", ["ActionAlterVendor"]),
 
     saveFornecedor: function() {
-      this.vendor.telephone = parseInt(this.vendor.telephone);
-      this.vendor.cnpj = parseInt(this.vendor.cnpj);
-      services.vendors.registerVendor(this.vendor).then(response => {
-        const id = response.data.id;
-        this.vendor.id = id;
-        this.ActionSetVendor(this.vendor);
-        this.ActionAlterVendor(this.vendor);
+      let validation = this.formValidate(this.vendor, this.required);
+      this.required = validation.validation;
+
+      if (validation.validate) {
+        this.vendor.telephone = parseInt(this.vendor.telephone);
+        this.vendor.cnpj = parseInt(this.vendor.cnpj);
+        services.vendors.registerVendor(this.vendor).then(response => {
+          const id = response.data.id;
+          this.vendor.id = id;
+          this.ActionSetVendor(this.vendor);
+          this.ActionAlterVendor(this.vendor);
+          this.$root.$emit("Hide::Modal", "register-vendor");
+        });
+      }
+    },
+
+    formValidate: function(datas, validation) {
+      let validate = true;
+      Object.keys(datas).forEach(value => {
+        validation[value] ? (validation[value]["is-invalid"] = false) : null;
+        if (!datas[value] && validation[value]) {
+          validation[value]["is-invalid"] = true;
+          validate = false;
+        }
       });
+
+      return {
+        validate,
+        validation
+      };
     }
   }
 };

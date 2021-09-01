@@ -5,6 +5,7 @@ export const ActionSetVendorList = ({ commit }, payload) => {
 };
 
 export const ActionSetVendor = ({ dispatch, state }, payload) => {
-  const vendorList = state.vendors.push(payload);
+  let vendorList = state.vendors;
+  vendorList.push(payload);
   dispatch("ActionSetVendorList", vendorList);
 };

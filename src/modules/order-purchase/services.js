@@ -1,20 +1,20 @@
 export default {
-  listPurchase: { method: "get", url: "order-purchase/" },
-  showPurchase: { method: "get", url: "order-purchase{/id}" },
+  listPurchase: { method: "get", url: "pedido-compra" },
+  showPurchase: { method: "get", url: "pedido-compra{/id}" },
   registerPurchase: {
     method: "post",
-    url: "order-purchase",
+    url: "pedido-compra",
     headers: { Accept: "application/json" }
   },
   updatePurchase: {
     method: "put",
-    url: "order-purchase{/id}",
+    url: "pedido-compra{/id}",
     headers: { Accept: "application/json" }
   },
-  deletePurchase: { method: "delete", url: "order-purchase{/id}" },
+  deletePurchase: { method: "delete", url: "pedido-compra{/id}" },
   filterPurchase: {
     method: "post",
-    url: "order-purchase/filtro",
+    url: "pedido-compra/filtro",
     headers: { Accept: "application/json" }
   }
 };

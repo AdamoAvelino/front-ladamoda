@@ -14,7 +14,7 @@
         <div class="form-group col-3">
           <label for="">CNPJ</label>
           <input
-            type="text"
+            type="number"
             class="form-control form-control-sm"
             placeholder="Digite o CNPJ"
             v-model="vendor.cnpj"
@@ -32,7 +32,7 @@
         <div class="form-group col-3">
           <label for="">Telefone</label>
           <input
-            type="text"
+            type="number"
             class="form-control form-control-sm"
             placeholder="Digite o Telefone"
             v-model="vendor.telephone"
@@ -52,6 +52,7 @@
 <script>
 import ModalComponent from "../../../components/ModalComonent.vue";
 import { mapActions } from "vuex";
+import services from "../../../http";
 export default {
   name: "ModalVendor",
   components: {
@@ -62,8 +63,8 @@ export default {
     return {
       vendor: {
         name: "",
-        cnpj: "",
-        telephone: "",
+        cnpj: null,
+        telephone: null,
         email: ""
       }
     };
@@ -71,9 +72,17 @@ export default {
 
   methods: {
     ...mapActions("vendors", ["ActionSetVendor"]),
+    ...mapActions("orderpurchase", ["ActionAlterVendor"]),
 
-    saveFornecedor: () => {
-      this.ActionSetVendor(this.vendor);
+    saveFornecedor: function() {
+      this.vendor.telephone = parseInt(this.vendor.telephone);
+      this.vendor.cnpj = parseInt(this.vendor.cnpj);
+      services.vendors.registerVendor(this.vendor).then(response => {
+        const id = response.data.id;
+        this.vendor.id = id;
+        this.ActionSetVendor(this.vendor);
+        this.ActionAlterVendor(this.vendor);
+      });
     }
   }
 };

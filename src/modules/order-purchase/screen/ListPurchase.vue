@@ -168,13 +168,13 @@ export default {
     };
   },
 
-  async mounted() {
-    await services.purchases.listPurchase().then(purchase => {
+  mounted() {
+    services.purchases.listPurchase().then(purchase => {
       this.purchases = purchase.data;
       this.sumOrder();
     });
 
-    services.categories.listarCategorias().then(response => {
+    services.categories.listCategories().then(response => {
       this.categories = response.data;
     });
   },

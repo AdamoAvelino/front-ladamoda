@@ -1,8 +1,8 @@
 export default {
-  listVendors: { method: "get", url: "vendor" },
+  listVendors: { method: "get", url: "fornecedor" },
   registerVendor: {
     method: "post",
-    url: "vendor",
-    header: { Accetp: "application/json", "Content-type": "application/json" }
+    url: "fornecedor",
+    headers: { Accept: "application/json" }
   }
 };

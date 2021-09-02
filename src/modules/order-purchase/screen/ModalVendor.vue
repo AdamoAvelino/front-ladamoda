@@ -85,7 +85,7 @@ export default {
     ...mapActions("orderpurchase", ["ActionAlterVendor"]),
 
     saveFornecedor: function() {
-      let validation = this.formValidate(this.vendor, this.required);
+      let validation = this.$formValidate(this.vendor, this.required);
       this.required = validation.validation;
 
       if (validation.validate) {
@@ -99,23 +99,23 @@ export default {
           this.$root.$emit("Hide::Modal", "register-vendor");
         });
       }
-    },
-
-    formValidate: function(datas, validation) {
-      let validate = true;
-      Object.keys(datas).forEach(value => {
-        validation[value] ? (validation[value]["is-invalid"] = false) : null;
-        if (!datas[value] && validation[value]) {
-          validation[value]["is-invalid"] = true;
-          validate = false;
-        }
-      });
-
-      return {
-        validate,
-        validation
-      };
     }
+
+    // formValidate: function(datas, validation) {
+    //   let validate = true;
+    //   Object.keys(datas).forEach(value => {
+    //     validation[value] ? (validation[value]["is-invalid"] = false) : null;
+    //     if (!datas[value] && validation[value]) {
+    //       validation[value]["is-invalid"] = true;
+    //       validate = false;
+    //     }
+    //   });
+
+    //   return {
+    //     validate,
+    //     validation
+    //   };
+    // }
   }
 };
 </script>

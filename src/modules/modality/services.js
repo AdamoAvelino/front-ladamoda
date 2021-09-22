@@ -1,8 +1,8 @@
 export default {
-  listColors: { method: "get", url: "cor" },
-  registerColor: {
+  listModalities: { method: "get", url: "modalidade" },
+  registerModality: {
     method: "post",
-    url: "cor",
+    url: "modalidade",
     headers: { Accept: "application/json", "Content-Type": "application/json" }
   }
 };

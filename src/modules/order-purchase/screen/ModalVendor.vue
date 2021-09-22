@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import ModalComponent from "../../../components/ModalComonent.vue";
+import ModalComponent from "../../../components/ModalComponent.vue";
 import { mapActions } from "vuex";
 import services from "../../../http";
 export default {
@@ -91,6 +91,7 @@ export default {
       if (validation.validate) {
         this.vendor.telephone = parseInt(this.vendor.telephone);
         this.vendor.cnpj = parseInt(this.vendor.cnpj);
+
         services.vendors.registerVendor(this.vendor).then(response => {
           const id = response.data.id;
           this.vendor.id = id;
@@ -100,22 +101,6 @@ export default {
         });
       }
     }
-
-    // formValidate: function(datas, validation) {
-    //   let validate = true;
-    //   Object.keys(datas).forEach(value => {
-    //     validation[value] ? (validation[value]["is-invalid"] = false) : null;
-    //     if (!datas[value] && validation[value]) {
-    //       validation[value]["is-invalid"] = true;
-    //       validate = false;
-    //     }
-    //   });
-
-    //   return {
-    //     validate,
-    //     validation
-    //   };
-    // }
   }
 };
 </script>

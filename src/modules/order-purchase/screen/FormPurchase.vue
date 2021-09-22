@@ -6,7 +6,7 @@
           Pedido
         </h3>
         <h1 slot="icon">
-          <i class="fas fa-handshake"></i>
+          <i class="fas fa-tshirt mr-1"></i>
         </h1>
       </info-page-component>
       <div class="col-10 d-flex">
@@ -15,7 +15,7 @@
             <div class="col-3">
               <label for="">Fornecedor</label> <br />
               <div class="input-group input-group-sm">
-                <span class="input-group-btn input-group-btn-sm">
+                <span class="input-group-prepend">
                   <button
                     class="btn btn-primary btn-sm"
                     type="button"
@@ -29,9 +29,10 @@
                 <select
                   v-if="purchase"
                   class="form-control form-control-sm"
+                  :class="required.vendor"
                   v-model="purchase.vendor.id"
                 >
-                  <option value="">Selecione</option>
+                  <option :value="0">Selecione</option>
                   <option
                     v-for="(vendor, index) in vendors"
                     :key="index"
@@ -42,16 +43,17 @@
                 </select>
               </div>
             </div>
-            <div class="col-2">
+            <div class="col-3">
               <label>Data</label>
               <input
                 type="date"
                 class="form-control form-control-sm"
                 v-model="purchase.date"
+                :class="required.date"
               />
             </div>
             <div class="col-2 d-flex align-items-end">
-              <button class="btn btn-sm btn-primary">
+              <button class="btn btn-sm btn-primary" v-on:click="addProduct">
                 <i class="fas fa-tshirt mr-1"></i>
                 <span>Add Produto</span>
               </button>
@@ -95,7 +97,7 @@
           </thead>
           <tbody>
             <tr v-for="(item, index) in purchase.items_purchase" :key="index">
-              <td>{{ item.product.code }} {{ item.order_purchase_id }}</td>
+              <td>{{ item.product.code }}</td>
               <td>{{ item.product.name }}</td>
               <td>{{ item.grade.size.name }}</td>
               <td>{{ item.grade.color.name }}</td>
@@ -111,7 +113,7 @@
                   <i class="fas fa-edit"></i>
                 </router-link> -->
 
-                <a href="#" class="ml-2">
+                <a href="#" class="ml-2" v-on:click="removeProduct(index)">
                   <i class="fas fa-trash"></i>
                 </a>
               </td>
@@ -121,32 +123,60 @@
       </div>
     </div>
     <modal-vendor />
+    <modal-product :enableFieldsProduct="enableFieldsProduct" />
   </div>
 </template>
 
 <script>
 import InfoPageComponent from "../../../components/InfoPageComponent.vue";
 import ModalVendor from "./ModalVendor.vue";
+import ModalProduct from "./ModalProduct.vue";
 import services from "../../../http";
 import { mapState, mapActions } from "vuex";
 export default {
   name: "FormPurchase",
   components: {
     ModalVendor,
+    ModalProduct,
     InfoPageComponent
   },
 
   data: () => {
-    return {};
+    return {
+      enableFieldsProduct: false,
+      required: {
+        vendor: { "is-invalid": false },
+        date: { "is-invalid": false }
+      }
+    };
   },
 
   methods: {
     ...mapActions("vendors", ["ActionSetVendorList"]),
+    ...mapActions("products", ["ActionResetProduct"]),
+    ...mapActions("orderpurchase", ["ActionRemoveProductPurchase"]),
 
     registerVendor: function() {
       this.$root.$emit("Show::Modal", "register-vendor");
     },
-    addProduto: () => {}
+
+    addProduct: function() {
+      let form = {};
+      form.vendor = this.purchase.vendor.id;
+      form.date = this.purchase.date;
+      let validation = this.$formValidate(form, this.required);
+      this.required = validation.validation;
+
+      if (validation.validate) {
+        this.ActionResetProduct();
+        this.enableFieldsProduct = !this.enableFieldsProduct;
+        this.$root.$emit("Show::Modal", "add-product");
+      }
+    },
+
+    removeProduct: function(position) {
+      this.ActionRemoveProductPurchase(position);
+    }
   },
 
   mounted() {

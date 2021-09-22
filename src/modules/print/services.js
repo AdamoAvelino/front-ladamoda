@@ -1,8 +1,8 @@
 export default {
-  listColors: { method: "get", url: "cor" },
-  registerColor: {
+  listPrints: { method: "get", url: "estampa" },
+  registerPrint: {
     method: "post",
-    url: "cor",
+    url: "estampa",
     headers: { Accept: "application/json", "Content-Type": "application/json" }
   }
 };

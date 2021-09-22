@@ -12,11 +12,13 @@ export default {
   },
 
   methods: {
-    ...mapActions("orderpurchase", ["ActionSetPurchase"])
+    ...mapActions("orderpurchase", ["ActionSetPurchase"]),
+    ...mapActions("orderpurchase", ["ActionResetPurchase"])
   },
 
   beforeMount() {
     this.ActionSetPurchase({ vendor: { id: 0 }, date: "" });
+    this.ActionResetPurchase();
   }
 };
 </script>

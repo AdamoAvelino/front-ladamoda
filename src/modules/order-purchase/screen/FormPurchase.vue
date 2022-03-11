@@ -62,88 +62,74 @@
         </div>
       </div>
     </div>
-    <div class="row mt-3">
-      <div class="col-4">
-        <div class="bg-primary shadow-la">
-          <div class="row py-2">
-            <div class="col-6 d-flex justify-content-center align-items-center">
-              <span class="text-display">
-                Total
-              </span>
-            </div>
-            <div class="col-6 d-flex justify-content-center align-items-center">
-              <span>R$ 1.500,00</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row mt-3">
-      <div class="col-12">
-        <table class="table table-sm bg-white shadow-la">
-          <thead class="bg-primary text-white">
-            <tr>
-              <th>Código</th>
-              <th>Nome</th>
-              <th>Tamnho</th>
-              <th>Cor</th>
-              <th>Estampa</th>
-              <th>Qtd</th>
-              <th>Valor</th>
-              <th>Subtotal</th>
-              <th>Modalidade</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(item, index) in purchase.items_purchase" :key="index">
-              <td>{{ item.product.code }}</td>
-              <td>{{ item.product.name }}</td>
-              <td>{{ item.grade.size.name }}</td>
-              <td>{{ item.grade.color.name }}</td>
-              <td>{{ item.grade.print.name }}</td>
-              <td>{{ item.quantity }}</td>
-              <td v-moeda-br="item.product.cost_value"></td>
-              <td v-moeda-br="item.product.cost_value * item.quantity"></td>
-              <td>{{ item.product.modality.name }}</td>
-              <td>
-                <!-- <router-link
-                  :to="{ name: '', params: { id: item.order_purchase_id } }"
-                >
-                  <i class="fas fa-edit"></i>
-                </router-link> -->
-
-                <a href="#" class="ml-2" v-on:click="removeProduct(index)">
-                  <i class="fas fa-trash"></i>
-                </a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <search-product class="mt-3" />
+    <list-purchase-item />
     <modal-vendor />
-    <modal-product :enableFieldsProduct="enableFieldsProduct" />
+    <modal-product />
+    <modal-component
+      size="md"
+      title="Cadastro de Tamanhos"
+      modalId="cadastro-tamanho"
+    >
+      <form-size slot="body" />
+    </modal-component>
+
+    <modal-component modalId="register-color" size="sm" title="Cadastro de Cor">
+      <form-color slot="body" />
+    </modal-component>
+
+    <modal-component
+      size="sm"
+      title="Cadastro de Estampas"
+      modalId="register-print"
+    >
+      <form-print slot="body"></form-print>
+    </modal-component>
   </div>
 </template>
 
 <script>
 import InfoPageComponent from "../../../components/InfoPageComponent.vue";
+
+import SearchProduct from "../Components/SearchProduct.vue";
+import ListPurchaseItem from "../Components/ListPurchaseItem.vue";
 import ModalVendor from "./ModalVendor.vue";
+import ModalComponent from "./../../../components/ModalComponent.vue";
 import ModalProduct from "./ModalProduct.vue";
+import FormSize from "../../size/screens/FormSize.vue";
+import FormColor from "../../color/screens/FormColor.vue";
+import FormPrint from "../../print/screen/FormPrint.vue";
+
 import services from "../../../http";
 import { mapState, mapActions } from "vuex";
+
 export default {
   name: "FormPurchase",
   components: {
+    FormSize,
+    FormColor,
+    FormPrint,
+    ModalComponent,
     ModalVendor,
+    SearchProduct,
+    ListPurchaseItem,
     ModalProduct,
     InfoPageComponent
   },
 
+  computed: {
+    ...mapState("orderpurchase", ["purchase"]),
+    ...mapState("vendors", ["vendors"])
+  },
+
+  mounted() {
+    services.vendors.listVendors().then(vendor => {
+      this.ActionSetVendorList(vendor.data);
+    });
+  },
+
   data: () => {
     return {
-      enableFieldsProduct: false,
       required: {
         vendor: { "is-invalid": false },
         date: { "is-invalid": false }
@@ -154,7 +140,6 @@ export default {
   methods: {
     ...mapActions("vendors", ["ActionSetVendorList"]),
     ...mapActions("products", ["ActionResetProduct"]),
-    ...mapActions("orderpurchase", ["ActionRemoveProductPurchase"]),
 
     registerVendor: function() {
       this.$root.$emit("Show::Modal", "register-vendor");
@@ -169,25 +154,9 @@ export default {
 
       if (validation.validate) {
         this.ActionResetProduct();
-        this.enableFieldsProduct = !this.enableFieldsProduct;
         this.$root.$emit("Show::Modal", "add-product");
       }
-    },
-
-    removeProduct: function(position) {
-      this.ActionRemoveProductPurchase(position);
     }
-  },
-
-  mounted() {
-    services.vendors.listVendors().then(vendor => {
-      this.ActionSetVendorList(vendor.data);
-    });
-  },
-
-  computed: {
-    ...mapState("orderpurchase", ["purchase"]),
-    ...mapState("vendors", ["vendors"])
   }
 };
 </script>

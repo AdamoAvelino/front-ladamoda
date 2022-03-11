@@ -43,3 +43,7 @@ export const ActionRemoveProductPurchase = ({ dispatch, state }, payload) => {
   purchase.items_purchase = items;
   dispatch("ActionSetPurchase", purchase);
 };
+
+export const ActionControlButtonForm = ({ commit }, payload) => {
+  commit(types.SET_CONTROL_BUTTON_FORM, payload);
+};

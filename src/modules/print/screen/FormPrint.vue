@@ -1,42 +1,36 @@
 <template>
-  <modal-component
-    size="sm"
-    title="Cadastro de Estampas"
-    modalId="register-print"
-    modalIdDependent="add-product"
-  >
-    <div class="shadow-la p-2 bg-white" slot="body">
-      <form class="row">
-        <div class="col-12">
-          <div class="form-group">
-            <label for="">Estampa</label>
-            <input
-              type="text"
-              class="form-control form-control-sm"
-              placeholder="Digite uma nova estampa"
-              v-model="print.name"
-              :class="required.name"
-            />
-          </div>
+  <div class="shadow-la p-2 bg-white" slot="body">
+    <form class="row">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="">Estampa</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Digite uma nova estampa"
+            v-model="print.name"
+            :class="required.name"
+          />
         </div>
-      </form>
-    </div>
-    <button class="btn btn-primary btn-sm" slot="footer" v-on:click="savePrint">
+      </div>
+    </form>
+    <button
+      class="btn btn-primary btn-sm mt-2"
+      slot="footer"
+      v-on:click="savePrint"
+    >
       <i class="fas fa-save mr-2"></i>
       Salvar
     </button>
-  </modal-component>
+  </div>
 </template>
 
 <script>
-import ModalComponent from "../../../components/ModalComponent.vue";
 import services from "../../../http";
 import { mapState, mapActions } from "vuex";
+
 export default {
-  name: "ModalPrint",
-  components: {
-    ModalComponent
-  },
+  name: "FormPrint",
 
   data: () => {
     return {

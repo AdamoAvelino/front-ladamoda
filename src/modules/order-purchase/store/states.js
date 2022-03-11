@@ -1,3 +1,4 @@
 export default {
-  purchase: {}
+  purchase: {},
+  addProductButton: true
 };

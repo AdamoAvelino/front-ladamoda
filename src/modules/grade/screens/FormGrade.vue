@@ -1,7 +1,90 @@
 <template>
-  <div>
-    <div class="shadow-la bg-white p-2 mt-3" slot="body">
+  <div class="shadow-la bg-white">
+    <div class="p-2 mt-3">
       <div class="row">
+        <div class="col-12">
+          <div class="bg-light p-2 shadow-la">
+            <div class="row">
+              <div class="col-1 border-right">
+                <strong>Código</strong><br />
+                <span class="badge badge-primary">{{ product.code }}</span>
+              </div>
+              <div class="col-3 border-right">
+                <strong>Produto</strong><br />
+                <span class="badge badge-primary">
+                  {{ product.name }}
+                </span>
+              </div>
+              <div class="col-2 border-right">
+                <strong>Categoria</strong><br />
+                <span class="badge badge-primary">
+                  {{ product.category.name }}
+                </span>
+              </div>
+              <div class="col-1 border-right">
+                <strong>Modalidade</strong><br />
+                <span class="badge badge-primary">
+                  {{ product.modality.name }}
+                </span>
+              </div>
+              <div class="col-2 border-right">
+                <strong>Valor</strong><br />
+                <div class="input-group input-group-sm">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text bg-primary text-white"
+                      >R$</span
+                    >
+                  </div>
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    placeholder=""
+                    v-model="product.cost_value"
+                  />
+                </div>
+              </div>
+              <div class="col-1 border-right">
+                <strong>Porc. (%)</strong><br />
+                <div class="input-group input-group-sm">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text bg-primary text-white"
+                      >%</span
+                    >
+                  </div>
+                  <input
+                    type="number"
+                    class="form-control form-control-sm"
+                    placeholder=""
+                    v-model="product.profit_porcentage"
+                  />
+                </div>
+              </div>
+              <div class="col-2 border-right">
+                <strong>Valor Venda</strong><br />
+                <span
+                  v-moeda-br="product.sale_value"
+                  class="badge badge-primary"
+                >
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          v-if="formGrade === 'd-none'"
+          class="col-2"
+          v-on:click="toggleFormGrade"
+        >
+          <button class="btn btn-primary btn-sm mt-2">
+            <i class="fas fa-plus-square"></i>
+            Grade
+          </button>
+        </div>
+      </div>
+
+      <hr :class="formGrade" />
+
+      <div class="row" :class="formGrade">
         <div class="col-3">
           <label for="">Tamanho</label>
           <div class="input-group input-group-sm">
@@ -96,21 +179,32 @@
         </div>
         <div class="col-3 align-items-end d-flex">
           <button
-            class="btn btn-sm btn-primary btn-block"
+            class="btn btn-sm btn-primary btn-block mr-2"
             v-on:click="newGrade"
             :disabled="!product.id"
           >
             <i class="fas fa-check-square"></i>
             Incluir
           </button>
+          <button
+            class="btn btn-sm btn-primary btn-block"
+            v-on:click="toggleFormGrade"
+            :disabled="!product.id"
+          >
+            <i class="fas fa-window-close"></i>
+            cancelar
+          </button>
         </div>
       </div>
     </div>
-
-    <div class="shadow-la bg-white mt-3" slot="body">
+    <hr />
+    <div class="px-3">
       <div class="row">
         <div class="col-12">
-          <table class="table table-hover table-sm" v-if="product.grade.length">
+          <table
+            class="table table-hover table-sm bg-light"
+            v-if="product.grade.length"
+          >
             <thead class="bg-primary text-white text-center">
               <tr>
                 <th width="10%">Tamanho</th>
@@ -172,6 +266,7 @@ export default {
 
   data: () => {
     return {
+      formGrade: "d-none",
       gradeForm: {
         id: 0,
         product_id: 0,
@@ -192,6 +287,10 @@ export default {
     ...mapActions("sizes", ["ActionSetSizes"]),
     ...mapActions("colors", ["ActionSetColors"]),
     ...mapActions("prints", ["ActionSetPrints"]),
+
+    toggleFormGrade: function() {
+      this.formGrade = this.formGrade === "d-none" ? "" : "d-none";
+    },
 
     newGrade: function() {
       const productGrade = this.product.grade.filter(grade => {
@@ -237,11 +336,13 @@ export default {
               grade.data.qtd = 0;
 
               this.product.grade.push(grade.data);
+              console.log("aqui ta");
+              this.toggleFormGrade();
               this.ActionSetProduct(this.product);
 
               /**
                * @todo
-               * incluir mensagem de erro
+               * incluir mensagem de sucesso
                */
             })
             .catch(error => {

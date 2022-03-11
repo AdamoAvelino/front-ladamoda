@@ -1,43 +1,32 @@
 <template>
-  <modal-component
-    size="md"
-    title="Cadastro de Tamanhos"
-    modalId="cadastro-tamanho"
-    modalIdDependent="add-product"
-  >
-    <div class="shadow-la p-2 bg-white" slot="body">
-      <form class="row">
-        <div class="col-12">
-          <div class="form-group">
-            <label for="">Tamanho</label>
-            <input
-              type="text"
-              class="form-control form-control-sm"
-              placeholder="Digite um novo tamanho"
-              v-model="size.name"
-              :class="required.name"
-            />
-          </div>
+  <div class="shadow-la p-2 bg-white" slot="body">
+    <form class="row">
+      <div class="col-12">
+        <div class="form-group">
+          <label for="">Tamanho</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Digite um novo tamanho"
+            v-model="size.name"
+            :class="required.name"
+          />
         </div>
-      </form>
-    </div>
+      </div>
+    </form>
     <button class="btn btn-primary btn-sm" slot="footer" v-on:click="saveSize">
       <i class="fas fa-save mr-2"></i>
       Salvar
     </button>
-  </modal-component>
+  </div>
 </template>
 
 <script>
-import ModalComponent from "../../../components/ModalComponent.vue";
 import services from "../../../http";
 import { mapState, mapActions } from "vuex";
-export default {
-  name: "ModalSize",
-  components: {
-    ModalComponent
-  },
 
+export default {
+  name: "FormSize",
   data: () => {
     return {
       size: {

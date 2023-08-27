@@ -336,7 +336,6 @@ export default {
               grade.data.qtd = 0;
 
               this.product.grade.push(grade.data);
-              console.log("aqui ta");
               this.toggleFormGrade();
               this.ActionSetProduct(this.product);
 

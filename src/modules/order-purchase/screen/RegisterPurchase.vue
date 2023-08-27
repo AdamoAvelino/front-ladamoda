@@ -12,7 +12,7 @@ export default {
   },
 
   methods: {
-    ...mapActions("orderpurchase", ["ActionSetPurchase"]),
+    ...mapActions("orderpurchase", ["ActionSetPurchase", "ActionControlButtonForm"]),
     ...mapActions("orderpurchase", ["ActionResetPurchase"])
   },
 
